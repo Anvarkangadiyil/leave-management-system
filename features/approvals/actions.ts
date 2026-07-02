@@ -169,6 +169,10 @@ export async function decideLeaveRequest(
           userEmail: req.user.email,
           userName: req.user.name,
         }
+      },
+      {
+        maxWait: 10000,
+        timeout: 15000,
       }
     )
 

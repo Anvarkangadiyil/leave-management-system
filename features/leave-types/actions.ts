@@ -69,6 +69,10 @@ export async function createLeaveType(values: LeaveTypeInput) {
           })
         }
       }
+    },
+    {
+      maxWait: 10000,
+      timeout: 15000,
     })
 
     revalidatePath("/admin/leave-types")
@@ -142,6 +146,10 @@ export async function updateLeaveType(id: string, values: LeaveTypeInput) {
           }
         }
       }
+    },
+    {
+      maxWait: 10000,
+      timeout: 15000,
     })
 
     revalidatePath("/admin/leave-types")
