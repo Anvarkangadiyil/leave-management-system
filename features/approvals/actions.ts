@@ -162,6 +162,7 @@ export async function decideLeaveRequest(
             action: `DECIDE_LEAVE_REQUEST`,
             details: `${status} request ${requestId} for ${req.user.name} (${req.days} days)`,
           },
+          
         })
 
         return {

@@ -54,6 +54,11 @@ export default function Sidebar({ user }: SidebarProps) {
             icon: LayoutDashboard,
           },
           {
+            href: "/employee/request-leave",
+            label: "Request Leave",
+            icon: CalendarPlus,
+          },
+          {
             href: "/manager/approvals",
             label: "Team Approvals",
             icon: CheckSquare,
@@ -66,6 +71,11 @@ export default function Sidebar({ user }: SidebarProps) {
             href: "/employee/dashboard",
             label: "Dashboard",
             icon: LayoutDashboard,
+          },
+          {
+            href: "/employee/request-leave",
+            label: "Request Leave",
+            icon: CalendarPlus,
           },
         ]
     }

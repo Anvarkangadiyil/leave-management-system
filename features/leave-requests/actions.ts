@@ -182,6 +182,7 @@ export async function submitLeaveRequest(values: LeaveRequestInput) {
     })
 
     revalidatePath("/employee/dashboard")
+    revalidatePath("/employee/request-leave")
     revalidatePath("/manager/dashboard")
     revalidatePath("/admin/dashboard")
     return { success: true, data: result }
