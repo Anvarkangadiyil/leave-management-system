@@ -83,6 +83,9 @@ export async function submitLeaveRequest(values: LeaveRequestInput) {
             year: currentYear,
           },
         },
+        include: {
+          leaveType: true,
+        },
       })
 
       if (!balance) {
@@ -137,10 +140,46 @@ export async function submitLeaveRequest(values: LeaveRequestInput) {
         },
       })
 
+      // 6. Create notifications for manager and admins
+      const requester = await tx.user.findUnique({
+        where: { id: userId },
+        select: { name: true, managerId: true },
+      })
+      const requesterName = requester?.name || "An employee"
+
+      const admins = await tx.user.findMany({
+        where: { role: "ADMIN" },
+        select: { id: true },
+      })
+
+      const recipientIds = new Set<string>()
+      if (requester?.managerId) {
+        recipientIds.add(requester.managerId)
+      }
+      admins.forEach((admin) => {
+        recipientIds.add(admin.id)
+      })
+      recipientIds.delete(userId) // Don't notify the requester themselves
+
+      const notificationData = Array.from(recipientIds).map((recipientId) => ({
+        userId: recipientId,
+        message: `${requesterName} submitted a new request for ${days} days of ${
+          balance.leaveType.name
+        } starting ${startDate}.`,
+      }))
+
+      if (notificationData.length > 0) {
+        await tx.notification.createMany({
+          data: notificationData,
+        })
+      }
+
       return request
     })
 
     revalidatePath("/employee/dashboard")
+    revalidatePath("/manager/dashboard")
+    revalidatePath("/admin/dashboard")
     return { success: true, data: result }
   } catch (error: any) {
     return { error: error.message || "Failed to submit leave request" }
