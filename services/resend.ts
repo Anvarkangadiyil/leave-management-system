@@ -20,7 +20,7 @@ export async function sendLeaveDecisionEmail(
 
   try {
     await resend.emails.send({
-      from: "LeaveManager <noreply@yourdomain.com>",
+      from: "anvarkangadiyil@gmail.com",
       to,
       subject: `Leave Request ${
         status.charAt(0) + status.slice(1).toLowerCase()

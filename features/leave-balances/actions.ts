@@ -10,7 +10,7 @@ export async function getMyLeaveBalances() {
   }
 
   const userId = session.user.id
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getUTCFullYear()
 
   // Fetch active leave types to compare
   const activeTypes = await db.leaveType.findMany({

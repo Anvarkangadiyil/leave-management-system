@@ -65,8 +65,8 @@ export default function RequestForm({ balances, onSuccess }: RequestFormProps) {
   // Calculate live business days
   useEffect(() => {
     if (watchStartDate && watchEndDate) {
-      const start = new Date(watchStartDate)
-      const end = new Date(watchEndDate)
+      const start = new Date(watchStartDate + "T00:00:00Z")
+      const end = new Date(watchEndDate + "T00:00:00Z")
       if (end >= start) {
         setDuration(calculateBusinessDays(start, end))
       } else {

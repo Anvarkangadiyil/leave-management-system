@@ -53,7 +53,7 @@ export async function createLeaveType(values: LeaveTypeInput) {
       // 2. If active, allocate initial balances to all users
       if (active) {
         const users = await tx.user.findMany({ select: { id: true } })
-        const currentYear = new Date().getFullYear()
+        const currentYear = new Date().getUTCFullYear()
 
         const balances = users.map((user) => ({
           userId: user.id,
@@ -116,7 +116,7 @@ export async function updateLeaveType(id: string, values: LeaveTypeInput) {
       // 3. If it was inactive and is now active, allocate balances for all users who don't have it
       if (original && !original.active && active) {
         const users = await tx.user.findMany({ select: { id: true } })
-        const currentYear = new Date().getFullYear()
+        const currentYear = new Date().getUTCFullYear()
 
         for (const user of users) {
           const existingBalance = await tx.leaveBalance.findUnique({

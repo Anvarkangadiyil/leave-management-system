@@ -5,21 +5,21 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// Helper to calculate business days excluding weekends
+// Helper to calculate business days excluding weekends (using UTC to be timezone-independent)
 export function calculateBusinessDays(startDate: Date, endDate: Date): number {
   let count = 0
   const curDate = new Date(startDate.getTime())
-  // Normalize time to midnight to avoid hours-offset discrepancies
-  curDate.setHours(0, 0, 0, 0)
+  // Normalize time to UTC midnight to avoid timezone discrepancies
+  curDate.setUTCHours(0, 0, 0, 0)
   const normalizedEnd = new Date(endDate.getTime())
-  normalizedEnd.setHours(0, 0, 0, 0)
+  normalizedEnd.setUTCHours(0, 0, 0, 0)
 
   while (curDate <= normalizedEnd) {
-    const dayOfWeek = curDate.getDay()
+    const dayOfWeek = curDate.getUTCDay()
     if (dayOfWeek !== 0 && dayOfWeek !== 6) {
       count++
     }
-    curDate.setDate(curDate.getDate() + 1)
+    curDate.setUTCDate(curDate.getUTCDate() + 1)
   }
   return count
 }

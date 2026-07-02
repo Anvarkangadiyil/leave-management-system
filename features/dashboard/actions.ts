@@ -13,7 +13,7 @@ async function requireAdmin() {
 export async function getAdminAnalytics() {
   await requireAdmin()
 
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getUTCFullYear()
   const startOfYear = new Date(`${currentYear}-01-01T00:00:00.000Z`)
   const endOfYear = new Date(`${currentYear}-12-31T23:59:59.999Z`)
 
@@ -87,7 +87,7 @@ export async function getAdminAnalytics() {
 
   // 3. Who is out this week (approved leave spanning today to next 7 days)
   const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  today.setUTCHours(0, 0, 0, 0)
   const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)
 
   const whosOut = await db.leaveRequest.findMany({

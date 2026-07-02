@@ -42,15 +42,15 @@ export async function submitLeaveRequest(values: LeaveRequestInput) {
   }
 
   const { leaveTypeId, startDate, endDate, reason } = validated.data
-  const start = new Date(startDate)
-  const end = new Date(endDate)
+  const start = new Date(startDate + "T00:00:00Z")
+  const end = new Date(endDate + "T00:00:00Z")
   const days = calculateBusinessDays(start, end)
 
   if (days <= 0) {
     return { error: "Leave request must span at least 1 business day" }
   }
 
-  const currentYear = start.getFullYear()
+  const currentYear = start.getUTCFullYear()
 
   try {
     const result = await db.$transaction(async (tx) => {
@@ -98,8 +98,8 @@ export async function submitLeaveRequest(values: LeaveRequestInput) {
           leaveTypeId,
           status: "PENDING",
           startDate: {
-            gte: new Date(`${currentYear}-01-01`),
-            lte: new Date(`${currentYear}-12-31`),
+            gte: new Date(`${currentYear}-01-01T00:00:00Z`),
+            lte: new Date(`${currentYear}-12-31T23:59:59.999Z`),
           },
         },
       })

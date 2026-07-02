@@ -100,7 +100,7 @@ export async function decideLeaveRequest(
         // 2. Perform updates based on decision
         if (status === "APPROVED") {
           // Fetch balance for the year
-          const currentYear = req.startDate.getFullYear()
+          const currentYear = req.startDate.getUTCFullYear()
           const balance = await tx.leaveBalance.findUnique({
             where: {
               userId_leaveTypeId_year: {
