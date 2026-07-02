@@ -31,7 +31,7 @@ In-product AI assistant, OAuth providers, holiday calendar, multi-org/tenant, pa
 ## 🛠️ 3. Stack
 
 **Frontend:** Next.js 15 (App Router, RSC by default), TypeScript, Tailwind + shadcn/ui, React Hook Form + Zod, Zustand (cross-component client state only), Recharts.
-**Backend:** Server Actions (mutations) + Route Handlers (webhooks only), PostgreSQL (Neon) + Prisma, Auth.js v5 (credentials only for v1), Resend (email).
+**Backend:** Server Actions (mutations) + Route Handlers (webhooks only), PostgreSQL (Neon) + Prisma, Auth.js v5 (credentials only for v1), SMTP (email via nodemailer).
 
 ---
 
@@ -76,7 +76,7 @@ src/
 ├── lib/                  # db.ts, utils.ts, auth.ts
 ├── types/
 ├── constants/
-└── services/             # resend.ts (anthropic.ts is post-MVP only)
+└── services/             # email.ts (anthropic.ts is post-MVP only)
 ```
 Each `features/x/` owns its `components/`, `actions.ts`, `schemas.ts`, `store.ts`. No cross-feature imports except via explicit exports.
 

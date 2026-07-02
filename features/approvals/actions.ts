@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db"
 import { auth } from "@/auth"
-import { sendLeaveDecisionEmail } from "@/services/resend"
+import { sendLeaveDecisionEmail } from "@/services/email"
 import { revalidatePath } from "next/cache"
 
 async function requireApprover() {

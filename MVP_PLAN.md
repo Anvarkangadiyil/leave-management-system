@@ -2,7 +2,7 @@
 
 A simple role-based leave management system: employees request leave, managers/admins approve it, balances update automatically.
 
-**Stack:** Next.js 15 (App Router) + TypeScript · PostgreSQL (Neon) · Prisma ORM · Tailwind CSS + shadcn/ui · Auth.js v5 · Resend (email) · Recharts (charts) · Vercel (deploy)
+**Stack:** Next.js 15 (App Router) + TypeScript · PostgreSQL (Neon) · Prisma ORM · Tailwind CSS + shadcn/ui · Auth.js v5 · SMTP (email via nodemailer) · Recharts (charts) · Vercel (deploy)
 
 Solo-builder pace. Each phase should run end-to-end before moving to the next.
 
@@ -141,7 +141,7 @@ No audit log table for MVP (add later if you actually need one).
 - Approval queue: pending requests, filter by status, oldest-first
 - Approve/reject Server Action, transactional: balance deduction + status update happen together or not at all
 - `Notification` model + migration — created in the same transaction as the approve/reject
-- Email on approve/reject via Resend — log failures, don't let them block the approval
+- Email on approve/reject via SMTP (nodemailer) — log failures, don't let them block the approval
 - In-app notification bell: unread count, dropdown list, mark-as-read
 - Authorization check inside the Server Action: manager → own reports only, admin → all
 
