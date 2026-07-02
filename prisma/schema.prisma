@@ -1,0 +1,102 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(EMPLOYEE)
+  managerId    String?
+  manager      User?    @relation("ManagerReports", fields: [managerId], references: [id])
+  reports      User[]   @relation("ManagerReports")
+  createdAt    DateTime @default(now())
+
+  leaveRequests LeaveRequest[] @relation("Requester")
+  approvals     LeaveRequest[] @relation("Approver")
+  leaveBalances LeaveBalance[]
+  notifications Notification[]
+}
+
+enum Role {
+  EMPLOYEE
+  MANAGER
+  ADMIN
+}
+
+model LeaveType {
+  id                 String   @id @default(cuid())
+  name               String   @unique
+  defaultDaysPerYear Int
+  active             Boolean  @default(true)
+
+  balances LeaveBalance[]
+  requests LeaveRequest[]
+}
+
+model LeaveBalance {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  leaveTypeId String
+  leaveType   LeaveType @relation(fields: [leaveTypeId], references: [id])
+  year        Int
+  allocated   Int
+  used        Int       @default(0)
+
+  @@unique([userId, leaveTypeId, year])
+}
+
+model LeaveRequest {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation("Requester", fields: [userId], references: [id])
+  leaveTypeId String
+  leaveType   LeaveType     @relation(fields: [leaveTypeId], references: [id])
+  startDate   DateTime
+  endDate     DateTime
+  days        Int
+  reason      String
+  status      RequestStatus @default(PENDING)
+  approverId  String?
+  approver    User?         @relation("Approver", fields: [approverId], references: [id])
+  decidedAt   DateTime?
+  createdAt   DateTime      @default(now())
+
+  @@index([userId, status])
+  @@index([status, createdAt])
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  details   String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
