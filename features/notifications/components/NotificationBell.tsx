@@ -2,40 +2,23 @@
 
 import { useState, useEffect, useRef } from "react"
 import { Bell, Check } from "lucide-react"
-import {
-  getMyNotifications,
-  markNotificationAsRead,
-  markAllNotificationsAsRead,
-} from "../actions"
-
-interface Notification {
-  id: string
-  message: string
-  read: boolean
-  createdAt: Date
-}
+import { useNotificationStore } from "../store"
 
 export default function NotificationBell() {
-  const [notifications, setNotifications] = useState<Notification[]>([])
+  const {
+    notifications,
+    unreadCount,
+    initSSE,
+    markRead,
+    markAllRead,
+  } = useNotificationStore()
+
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const fetchNotifications = async () => {
-    try {
-      const data = await getMyNotifications()
-      setNotifications(
-        data.map((n) => ({ ...n, createdAt: new Date(n.createdAt) }))
-      )
-    } catch (e) {
-      // Silently fail if not logged in yet or db not migrated
-    }
-  }
-
   useEffect(() => {
-    fetchNotifications()
-    const interval = setInterval(fetchNotifications, 20000) // Poll every 20 seconds
-    return () => clearInterval(interval)
-  }, [])
+    initSSE()
+  }, [initSSE])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -49,20 +32,6 @@ export default function NotificationBell() {
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
-
-  const unreadCount = notifications.filter((n) => !n.read).length
-
-  const handleMarkAsRead = async (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    )
-    await markNotificationAsRead(id)
-  }
-
-  const handleMarkAllAsRead = async () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
-    await markAllNotificationsAsRead()
-  }
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -86,7 +55,7 @@ export default function NotificationBell() {
             </span>
             {unreadCount > 0 && (
               <button
-                onClick={handleMarkAllAsRead}
+                onClick={markAllRead}
                 className="text-[10px] text-primary hover:text-primary-hover font-medium flex items-center gap-1 cursor-pointer"
               >
                 <Check className="w-3 h-3" />
@@ -104,7 +73,7 @@ export default function NotificationBell() {
               notifications.map((n) => (
                 <div
                   key={n.id}
-                  onClick={() => !n.read && handleMarkAsRead(n.id)}
+                  onClick={() => !n.read && markRead(n.id)}
                   className={`p-3 text-xs leading-relaxed transition-colors cursor-pointer flex gap-3 ${
                     n.read
                       ? "text-ink-subtle hover:bg-surface-2/20"
