@@ -1,24 +1,13 @@
-import nodemailer from "nodemailer"
+import { Resend } from "resend"
 
-// SMTP Configuration from Environment Variables
-const smtpHost = process.env.SMTP_HOST
-const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587
-const smtpUser = process.env.SMTP_USER
-const smtpPass = process.env.SMTP_PASS
-const smtpFrom = process.env.SMTP_FROM || "no-reply@yourdomain.com"
+// Resend Configuration from Environment Variables
+const resendApiKey = process.env.RESEND_API_KEY
+let resendFrom = process.env.RESEND_FROM || "onboarding@resend.dev"
+if (resendFrom && !resendFrom.includes("@")) {
+  resendFrom = `no-reply@${resendFrom}`
+}
 
-// Create reusable transporter object using SMTP transport if configured
-const transporter = smtpHost && smtpUser && smtpPass
-  ? nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpPort === 465 || process.env.SMTP_SECURE === "true",
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    })
-  : null
+const resend = resendApiKey ? new Resend(resendApiKey) : null
 
 export async function sendLeaveDecisionEmail(
   to: string,
@@ -27,7 +16,7 @@ export async function sendLeaveDecisionEmail(
   days: number,
   startDate: Date
 ) {
-  if (!transporter) {
+  if (!resend) {
     console.log(
       `[Email Mock] To: ${to}, User: ${userName}, Status: ${status}, Days: ${days}, Start: ${startDate.toISOString().split("T")[0]}`
     )
@@ -36,8 +25,10 @@ export async function sendLeaveDecisionEmail(
 
   try {
     const statusText = status.charAt(0) + status.slice(1).toLowerCase()
-    await transporter.sendMail({
-      from: smtpFrom,
+    
+    // Send email using official Resend SDK
+    const { error } = await resend.emails.send({
+      from: resendFrom,
       to,
       subject: `Leave Request ${statusText}`,
       html: `
@@ -45,8 +36,12 @@ export async function sendLeaveDecisionEmail(
         <p>Your request for ${days} days of leave starting ${startDate.toLocaleDateString()} has been <strong>${status.toLowerCase()}</strong>.</p>
       `,
     })
+
+    if (error) {
+      throw error
+    }
   } catch (error) {
     // Log failures, don't let them block the approval flow
-    console.error("SMTP email failed to send:", error)
+    console.error("Resend email failed to send:", error)
   }
 }
