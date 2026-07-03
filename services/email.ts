@@ -1,4 +1,5 @@
 import { Resend } from "resend"
+import { getLeaveDecisionEmailHtml } from "@/lib/emailTemplates"
 
 // Resend Configuration from Environment Variables
 const resendApiKey = process.env.RESEND_API_KEY
@@ -25,16 +26,27 @@ export async function sendLeaveDecisionEmail(
 
   try {
     const statusText = status.charAt(0) + status.slice(1).toLowerCase()
-    
+    const badgeClass = status === "APPROVED" ? "badge-approved" : "badge-rejected"
+    const startDateFormatted = startDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    })
+
+    const html = getLeaveDecisionEmailHtml(
+      userName,
+      statusText,
+      badgeClass,
+      days,
+      startDateFormatted
+    )
+
     // Send email using official Resend SDK
     const { error } = await resend.emails.send({
       from: resendFrom,
       to,
-      subject: `Leave Request ${statusText}`,
-      html: `
-        <p>Hello ${userName},</p>
-        <p>Your request for ${days} days of leave starting ${startDate.toLocaleDateString()} has been <strong>${status.toLowerCase()}</strong>.</p>
-      `,
+      subject: `Leave Request ${statusText} - ${days} Days`,
+      html,
     })
 
     if (error) {
