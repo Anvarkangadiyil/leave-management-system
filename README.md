@@ -1,6 +1,6 @@
 # Leave Management Platform — MVP
 
-A simple, role-based leave management system built with Next.js, PostgreSQL (Neon), Prisma, Tailwind CSS, Auth.js v5 (NextAuth), and SMTP.
+A simple, role-based leave management system built with Next.js, PostgreSQL (Neon), Prisma, Tailwind CSS, Auth.js v5 (NextAuth), and Resend.
 
 ## 🎯 Features
 
@@ -8,7 +8,7 @@ A simple, role-based leave management system built with Next.js, PostgreSQL (Neo
 - **Leave Balances:** Automatic balance allocation per active leave type with auto-healing fallback.
 - **Request Flow:** Interactive request forms with live business day duration calculations and balance checks.
 - **Approval Queue:** Oldest-first approval list for managers and admins to accept or reject requests.
-- **Notifications:** In-app notification system (polling-enabled bell component) and SMTP email alerts.
+- **Notifications:** In-app notification system (polling-enabled bell component) and Resend email alerts.
 - **Analytics Console:** Administrative stats and visual Recharts displaying approved days trends and type breakdowns.
 - **Robust Transactions:** All status, balance mutations, and audit records execute in single database transactions.
 
@@ -22,7 +22,7 @@ A simple, role-based leave management system built with Next.js, PostgreSQL (Neo
 - **Forms & Validation:** React Hook Form + Zod
 - **Icons & Styling:** Lucide React + Tailwind CSS v4
 - **Charts:** Recharts
-- **Email:** SMTP (Nodemailer)
+- **Email:** Resend (API)
 
 ---
 
@@ -42,13 +42,9 @@ DATABASE_URL="postgresql://postgres:postgres@localhost:5432/leave_management?sch
 # NextAuth secret key (at least 32 characters)
 AUTH_SECRET="your_next_auth_secret_minimum_32_characters_long_here"
 
-# SMTP Configuration for email notifications
-SMTP_HOST="smtp.example.com"
-SMTP_PORT="587"
-SMTP_USER="username"
-SMTP_PASS="password"
-SMTP_SECURE="false" # "true" for port 465, otherwise "false"
-SMTP_FROM="no-reply@example.com"
+# Resend Configuration for email notifications
+RESEND_API_KEY="re_..."
+RESEND_FROM="onboarding@resend.dev"
 ```
 
 ### 3. Migrate the Database
@@ -101,10 +97,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 2. In the project settings, add the environment variables:
    - `DATABASE_URL`
    - `AUTH_SECRET` (Generate using `openssl rand -base64 32`)
-   - `SMTP_HOST`
-   - `SMTP_PORT`
-   - `SMTP_USER`
-   - `SMTP_PASS`
-   - `SMTP_SECURE`
-   - `SMTP_FROM`
+   - `RESEND_API_KEY`
+   - `RESEND_FROM`
 3. Deploy! Next.js will automatically compile the server components, actions, and client bundles.
