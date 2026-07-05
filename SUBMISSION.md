@@ -1,4 +1,4 @@
-﻿# 📬 Project Submission — Leave Management Platform
+# 📬 Project Submission — Leave Management Platform
 
 ---
 
@@ -22,7 +22,7 @@
 
 1. **Employee** → Submit a leave request → Balance only deducted after approval (not on submission)
 2. **Manager** → Approve/Reject from the queue → In-app notification + email fired atomically
-3. **Admin** → Manage leave types, view analytics dashboard with Recharts charts
+3. **Admin** → Approve/Reject any request (all employees, not scoped to reports) → Manage leave types → View analytics dashboard with Recharts charts
 
 ---
 
