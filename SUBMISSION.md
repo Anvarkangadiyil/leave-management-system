@@ -8,6 +8,12 @@
 
 ---
 
+## 🚀 Live Demo
+
+**URL:** https://leave-management-system-beige.vercel.app/
+
+---
+
 ## 🎥 Demo Proof
 
 > **Test credentials (password: `password123`):**
