@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { logoutAction } from "@/features/auth/actions"
+import { signOut } from "next-auth/react"
 import { create } from "zustand"
 import {
   LayoutDashboard,
@@ -215,7 +215,7 @@ export default function Sidebar({ user }: SidebarProps) {
               {/* Sign out mini button */}
               <button
                 onClick={async () => {
-                  await logoutAction()
+                  await signOut({ callbackUrl: "/login" })
                 }}
                 className="flex items-center justify-center p-2 text-ink-subtle hover:text-danger rounded hover:bg-surface-2 transition-colors cursor-pointer"
                 title="Sign out"
@@ -235,7 +235,7 @@ export default function Sidebar({ user }: SidebarProps) {
               </div>
               <button
                 onClick={async () => {
-                  await logoutAction()
+                  await signOut({ callbackUrl: "/login" })
                 }}
                 className="flex items-center gap-2 w-full px-3 py-1.5 text-[11px] font-medium text-ink-subtle hover:text-danger rounded hover:bg-surface-2 transition-colors cursor-pointer"
               >
@@ -312,7 +312,7 @@ export default function Sidebar({ user }: SidebarProps) {
               <button
                 onClick={async () => {
                   close()
-                  await logoutAction()
+                  await signOut({ callbackUrl: "/login" })
                 }}
                 className="flex items-center gap-2 mt-2 w-full px-3 py-1.5 text-[11px] font-medium text-ink-subtle hover:text-danger rounded hover:bg-surface-2 transition-colors cursor-pointer"
               >

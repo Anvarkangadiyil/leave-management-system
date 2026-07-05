@@ -1,14 +1,16 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema, LoginInput } from "../schemas"
-import { loginAction } from "../actions"
+import { signIn } from "next-auth/react"
 
 export default function LoginForm() {
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
 
   const {
     register,
@@ -27,11 +29,21 @@ export default function LoginForm() {
     setIsSubmitting(true)
 
     try {
-      const result = await loginAction(data)
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        callbackUrl: "/",
+        redirect: false,
+      })
+
       if (result?.error) {
-        setError(result.error)
+        setError("Invalid email or password")
         setIsSubmitting(false)
+        return
       }
+
+      router.push(result?.url ?? "/")
+      router.refresh()
     } catch (e) {
       setError("An unexpected error occurred.")
       setIsSubmitting(false)
