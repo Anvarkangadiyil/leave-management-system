@@ -2,6 +2,10 @@ import { NextRequest } from "next/server"
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
 
+type NotificationTimestamp = {
+  createdAt: Date | string
+}
+
 export const dynamic = "force-dynamic"
 
 export async function GET(req: NextRequest) {
@@ -16,7 +20,7 @@ export async function GET(req: NextRequest) {
   const writer = responseStream.writable.getWriter()
   const encoder = new TextEncoder()
 
-  const send = async (data: any) => {
+  const send = async (data: unknown) => {
     try {
       await writer.write(encoder.encode(`data: ${JSON.stringify(data)}\n\n`))
     } catch (e) {
@@ -37,7 +41,7 @@ export async function GET(req: NextRequest) {
       })
 
       if (notifications.length > 0) {
-        const maxTime = Math.max(...notifications.map((n) => new Date(n.createdAt).getTime()))
+        const maxTime = Math.max(...notifications.map((n: NotificationTimestamp) => new Date(n.createdAt).getTime()))
         lastChecked = new Date(maxTime)
       }
 
@@ -67,7 +71,7 @@ export async function GET(req: NextRequest) {
         })
 
         if (newNotifications.length > 0) {
-          const maxTime = Math.max(...newNotifications.map((n) => new Date(n.createdAt).getTime()))
+          const maxTime = Math.max(...newNotifications.map((n: NotificationTimestamp) => new Date(n.createdAt).getTime()))
           lastChecked = new Date(maxTime)
           await send({ type: "update", notifications: newNotifications })
         } else {

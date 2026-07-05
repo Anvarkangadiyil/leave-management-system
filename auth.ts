@@ -1,14 +1,22 @@
-import NextAuth from "next-auth"
+import { getServerSession, type NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { authConfig } from "./auth.config"
 import { z } from "zod"
 import { db } from "@/lib/db"
 import bcrypt from "bcryptjs"
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  ...authConfig,
+export const authOptions: NextAuthOptions = {
+  pages: {
+    signIn: "/login",
+  },
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
       async authorize(credentials) {
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(6) })
@@ -34,4 +42,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-})
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.role = user.role
+        token.id = user.id
+      }
+      return token
+    },
+    session({ session, token }) {
+      if (session.user) {
+        session.user.role = token.role ?? "EMPLOYEE"
+        session.user.id = token.id ?? ""
+      }
+      return session
+    },
+  },
+}
+
+export function auth() {
+  return getServerSession(authOptions)
+}
