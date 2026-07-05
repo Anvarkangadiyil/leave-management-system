@@ -113,20 +113,6 @@ export default function LoginForm() {
         </button>
       </form>
 
-      <div className="mt-6 border-t border-hairline pt-4 text-xs text-ink-tertiary">
-        <p className="font-medium text-ink-subtle mb-1">Demo Credentials (pw: password123):</p>
-        <ul className="space-y-1 text-[11px]">
-          <li>
-            <span className="text-ink-muted font-mono">admin@company.com</span> - Admin
-          </li>
-          <li>
-            <span className="text-ink-muted font-mono">manager@company.com</span> - Manager
-          </li>
-          <li>
-            <span className="text-ink-muted font-mono">employee@company.com</span> - Employee
-          </li>
-        </ul>
-      </div>
     </div>
   )
 }
