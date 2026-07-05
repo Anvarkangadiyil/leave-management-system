@@ -16,7 +16,7 @@ A simple, role-based leave management system built with Next.js, PostgreSQL (Neo
 
 ## 🛠️ Tech Stack
 
-- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Framework:** Next.js 15 (App Router, Turbopack)
 - **Database:** PostgreSQL (Neon) + Prisma ORM
 - **Authentication:** Auth.js v5 (Credentials Provider)
 - **Forms & Validation:** React Hook Form + Zod
